@@ -1,56 +1,74 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
+import React,{useEffect, useState} from 'react';
+// import { Counter } from './features/counter/Counter';
 import './App.css';
 
 function App() {
+  const [todo, setTodo] = useState('')
+  const[ tasks, setTask]= useState([{id:1,task:'HElo'}])
+  const [editItem, setEditItem]= useState(null)
+
+
+
+  const editTask=(id,task)=>{
+    const newTask = tasks.map(item=>item.id===id ? {id,task} : item)
+    setTask(newTask)
+  }
+
+  
+const addTask=(todo)=>{
+  if(editItem===null){
+  if(todo!==''){
+setTask([...tasks,{id:Math.random(), task:todo}])
+setTodo("")
+  }
+  else{
+    alert("withOut name")
+  }}
+  else{
+    editTask(editItem.id, todo)
+    setTodo("")
+    setEditItem(null)
+  }
+
+  
+}
+const clearTask=()=>{
+  setTask([])
+}
+const deleteTask=(id)=>{
+  alert(id)
+  setTask([...tasks.filter(item=>item.id!==id)])
+}
+console.log(tasks)
+
+const findItem=(id)=>{
+  alert(id)
+  setEditItem(tasks.find(item=>item.id===id))
+}
+
+
+useEffect(() => {
+  if(editItem!==null){
+    console.log(editItem.task)
+    setTodo(editItem.task)
+  }
+  else{
+    setTodo("")
+  }
+}, [editItem])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
+     <input type="text" value={todo} onChange={(e)=>setTodo(e.target.value)}/>
+     <button onClick={()=>addTask(todo)}> {editItem ===null ? 'ADD' : 'UPDATE'}</button>
+     <button onClick={()=>clearTask()}>CLEAR</button>
+
+    {tasks.map(item=>(
+      <div>
+      <h1>{item.task}</h1>
+      <button onClick={()=>deleteTask(item.id)}>Del</button>
+      <button onClick={()=>findItem(item.id)}>find</button>
+      </div>
+    ))}
     </div>
   );
 }
